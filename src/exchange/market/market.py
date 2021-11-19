@@ -1,5 +1,5 @@
 from src.exchange.data.quote import Quote
-from lob.order_book import OrderBook
+from src.exchange.market.lob.order_book import OrderBook
 from src.exchange.data.tick import Tick
 from src.exchange.data.trade import Trade
 from src.exchange.data.order import Order
@@ -44,17 +44,18 @@ class Market:
                 return
             order_data['price'] = price
 
-        trades, order_in_book = self.book.processOrder(order_data)
+        trades, order_in_book = self.book.processOrder(order_data, False, False)
 
         order_id = order_in_book['idNum'] if order_in_book else None
 
         order = Order(order_id, pid, self.timestamp, self.symbol, side, type, qty, price)
 
-        parsed_trades = Trade.parse_trades(trades)
+        parsed_trades = Trade.parse_trades(trades, self.symbol)
         
         self.market_data_feed.publish_order(order)
         self.market_data_feed.publish_trades(parsed_trades)
 
+        return order
     
     def increment_market_time(self):
         self.timestamp += 1

@@ -3,9 +3,9 @@ from typing import List
 
 class Order:
 
-    def __init__(self, id: float, tid: float, timestamp: float, symbol: str, side: str, type: str, qty: float, price: float=None):
+    def __init__(self, id: float, pid: float, timestamp: float, symbol: str, side: str, type: str, qty: float, price: float=None):
         self.id = id
-        self.tid = tid
+        self.pid = pid
         self.timestamp = timestamp
         self.symbol = symbol
         self.side = side
@@ -43,6 +43,10 @@ class Order:
             self._qty_filled += trade.qty
         
         self._avg_fill_price = self._filled_cost / self._qty_filled
+
+    def __str__(self):
+
+        return f"t={self.timestamp}:{self.pid}:{self.type}:{self.id}:{self.side}:{self.symbol}:{self.qty}:{self.price if self.type == 'limit' else 0}"
 
 
         
